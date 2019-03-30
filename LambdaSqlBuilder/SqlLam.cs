@@ -1,11 +1,11 @@
 ﻿/* License: http://www.apache.org/licenses/LICENSE-2.0 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using LambdaSqlBuilder.Builder;
 using LambdaSqlBuilder.Resolver;
 using LambdaSqlBuilder.ValueObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace LambdaSqlBuilder
 {
@@ -23,6 +23,15 @@ namespace LambdaSqlBuilder
             _resolver = new LambdaResolver(_builder);
         }
 
+        public string ToSql(string indexName = null)
+        {
+            var sqlString = QueryString;
+            if (!string.IsNullOrWhiteSpace(indexName))
+            {
+                sqlString = sqlString.Replace(typeof(T).Name, indexName);
+            }
+            return sqlString.Replace($"[{typeof(T).Name}].", "").Replace("[", "").Replace("]", "");
+        }
         public SqlLam(Expression<Func<T, bool>> expression) : this()
         {
             Where(expression);
@@ -136,8 +145,8 @@ namespace LambdaSqlBuilder
             return this;
         }
 
-        public SqlLam<TResult> Join<T2, TKey, TResult>(SqlLam<T2> joinQuery,  
-            Expression<Func<T, TKey>> primaryKeySelector, 
+        public SqlLam<TResult> Join<T2, TKey, TResult>(SqlLam<T2> joinQuery,
+            Expression<Func<T, TKey>> primaryKeySelector,
             Expression<Func<T, TKey>> foreignKeySelector,
             Func<T, T2, TResult> selection)
         {
