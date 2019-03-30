@@ -1,11 +1,8 @@
 ﻿/* License: http://www.apache.org/licenses/LICENSE-2.0 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using LambdaSqlBuilder.ValueObjects;
+using System;
+using System.Linq.Expressions;
 
 namespace LambdaSqlBuilder.Resolver
 {
@@ -35,7 +32,11 @@ namespace LambdaSqlBuilder.Resolver
             var fieldName = GetColumnName(GetMemberExpression(expression.Body));
             _builder.OrderBy(GetTableName<T>(), fieldName, desc);
         }
-        
+        public void Limit<T>( int? limit = null)
+        {
+            _builder.Limit(limit);
+        }
+
         public void Select<T>(Expression<Func<T, object>> expression)
         {
             Select<T>(expression.Body);
@@ -58,15 +59,15 @@ namespace LambdaSqlBuilder.Resolver
                     break;
                 default:
                     throw new ArgumentException("Invalid expression");
-            }           
+            }
         }
 
         private void Select<T>(MemberExpression expression)
         {
-            if (expression.Type.IsClass && expression.Type != typeof(String))
-                _builder.Select(GetTableName(expression.Type));                            
+            if (expression.Type.IsClass && expression.Type != typeof(string))
+                _builder.Select(GetTableName(expression.Type));
             else
-                _builder.Select(GetTableName<T>(), GetColumnName(expression));            
+                _builder.Select(GetTableName<T>(), GetColumnName(expression));
         }
 
         public void SelectWithFunction<T>(Expression<Func<T, object>> expression, SelectFunction selectFunction)

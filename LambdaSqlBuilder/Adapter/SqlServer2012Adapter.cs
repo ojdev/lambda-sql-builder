@@ -12,6 +12,11 @@ namespace LambdaSqlBuilder.Adapter
     /// </summary>
     class SqlServer2012Adapter : SqlServerAdapterBase, ISqlAdapter
     {
+        public string QueryString(string selection, string source, string conditions, string order, string grouping, string having, string limit)
+        {
+            return QueryString(selection, source, conditions, order, grouping, having) + limit;
+        }
+
         public string QueryStringPage(string source, string selection, string conditions, string order, 
             int pageSize, int pageNumber)
         {

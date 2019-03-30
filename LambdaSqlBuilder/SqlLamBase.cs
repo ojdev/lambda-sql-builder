@@ -20,11 +20,6 @@ namespace LambdaSqlBuilder
 
         public SqlQueryBuilder SqlBuilder { get { return _builder; } }
 
-        public string QueryStringPage(int pageSize, int? pageNumber = null)
-        {
-            return _builder.QueryStringPage(pageSize, pageNumber);
-        }
-
         public IDictionary<string, object> QueryParameters
         {
             get { return _builder.Parameters; }

@@ -1,9 +1,5 @@
 ﻿/* License: http://www.apache.org/licenses/LICENSE-2.0 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace LambdaSqlBuilder.Adapter
 {
@@ -12,6 +8,11 @@ namespace LambdaSqlBuilder.Adapter
     /// </summary>
     class SqlServer2008Adapter : SqlServerAdapterBase, ISqlAdapter
     {
+        public string QueryString(string selection, string source, string conditions, string order, string grouping, string having, string limit)
+        {
+            return QueryString(selection, source, conditions, order, grouping, having) + limit;
+        }
+
         public string QueryStringPage(string source, string selection, string conditions, string order,
             int pageSize, int pageNumber)
         {
@@ -19,7 +20,7 @@ namespace LambdaSqlBuilder.Adapter
                                            selection, order, source, conditions);
 
             return string.Format("SELECT TOP {0} * FROM ({1}) InnerQuery WHERE RN > {2} ORDER BY RN",
-                                 pageSize, innerQuery, pageSize*(pageNumber - 1));
+                                 pageSize, innerQuery, pageSize * (pageNumber - 1));
         }
     }
 }

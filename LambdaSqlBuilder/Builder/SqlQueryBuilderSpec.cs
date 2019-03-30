@@ -1,9 +1,5 @@
 ﻿/* License: http://www.apache.org/licenses/LICENSE-2.0 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using LambdaSqlBuilder.ValueObjects;
 
 namespace LambdaSqlBuilder.Builder
@@ -16,7 +12,7 @@ namespace LambdaSqlBuilder.Builder
         public void Join(string originalTableName, string joinTableName, string leftField, string rightField)
         {
             var joinString = string.Format("JOIN {0} ON {1} = {2}",
-                                           Adapter.Table(joinTableName), 
+                                           Adapter.Table(joinTableName),
                                            Adapter.Field(originalTableName, leftField),
                                            Adapter.Field(joinTableName, rightField));
             _tableNames.Add(joinTableName);
@@ -30,7 +26,7 @@ namespace LambdaSqlBuilder.Builder
             if (desc)
                 order += " DESC";
 
-            _sortList.Add(order);            
+            _sortList.Add(order);
         }
 
         public void Select(string tableName)
@@ -53,6 +49,13 @@ namespace LambdaSqlBuilder.Builder
         public void GroupBy(string tableName, string fieldName)
         {
             _groupingList.Add(Adapter.Field(tableName, fieldName));
+        }
+        public void Limit(int? limit = null)
+        {
+            if (limit != null)
+            {
+                _limit = $" LIMIT {limit}";
+            }
         }
     }
 }

@@ -26,11 +26,16 @@ namespace LambdaSqlBuilder
         public string ToSql(string indexName = null)
         {
             var sqlString = _builder.QueryString;
+            foreach (var t in QueryParameters)
+            {
+                sqlString = sqlString.Replace($"@{t.Key}", $"{t.Value}");
+                Console.WriteLine(t.Key + "\t" + t.Value);
+            }
             if (!string.IsNullOrWhiteSpace(indexName))
             {
                 sqlString = sqlString.Replace(typeof(T).Name, indexName);
             }
-            return sqlString.Replace($"[{typeof(T).Name}].", "").Replace("[", "").Replace("]", "");
+            return sqlString.Replace($"{typeof(T).Name}.", "");
         }
         public SqlLam(Expression<Func<T, bool>> expression) : this()
         {
@@ -68,7 +73,6 @@ namespace LambdaSqlBuilder
             _resolver.QueryByIsIn(expression, sqlQuery);
             return this;
         }
-
         public SqlLam<T> WhereIsIn(Expression<Func<T, object>> expression, IEnumerable<object> values)
         {
             _builder.And();
@@ -99,6 +103,11 @@ namespace LambdaSqlBuilder
         public SqlLam<T> OrderByDescending(Expression<Func<T, object>> expression)
         {
             _resolver.OrderBy(expression, true);
+            return this;
+        }
+        public SqlLam<T> Limit(int? limit = null)
+        {
+            _resolver.Limit<T>(limit);
             return this;
         }
 

@@ -1,12 +1,11 @@
 ﻿/* License: http://www.apache.org/licenses/LICENSE-2.0 */
 
+using LambdaSqlBuilder.Adapter;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using LambdaSqlBuilder.Adapter;
 
 namespace LambdaSqlBuilder.Builder
 {
@@ -26,6 +25,7 @@ namespace LambdaSqlBuilder.Builder
         private readonly List<string> _selectionList = new List<string>();
         private readonly List<string> _conditions = new List<string>();
         private readonly List<string> _sortList = new List<string>();
+        private string _limit = null;
         private readonly List<string> _groupingList = new List<string>();
         private readonly List<string> _havingConditions = new List<string>();
         private readonly List<string> _splitColumns = new List<string>();
@@ -105,25 +105,13 @@ namespace LambdaSqlBuilder.Builder
             }
         }
 
-        public IDictionary<string, object> Parameters { get; private set; }               
+        public IDictionary<string, object> Parameters { get; private set; }
 
         public string QueryString
         {
-            get { return Adapter.QueryString(Selection, Source, Conditions, Grouping, Having, Order); }
+            get { return Adapter.QueryString(Selection, Source, Conditions, Grouping, Having, Order, _limit); }
         }
 
-        public string QueryStringPage(int pageSize, int? pageNumber = null)
-        {
-            if (pageNumber.HasValue)
-            {
-                if (_sortList.Count == 0)
-                    throw new Exception("Pagination requires the ORDER BY statement to be specified");
-
-                return Adapter.QueryStringPage(Source, Selection, Conditions, Order, pageSize, pageNumber.Value);
-            }
-            
-            return Adapter.QueryStringPage(Source, Selection, Conditions, Order, pageSize);
-        }
 
         internal SqlQueryBuilder(string tableName, ISqlAdapter adapter)
         {
@@ -142,7 +130,7 @@ namespace LambdaSqlBuilder.Builder
 
         private void AddParameter(string key, object value)
         {
-            if(!Parameters.ContainsKey(key))
+            if (!Parameters.ContainsKey(key))
                 Parameters.Add(key, value);
         }
         #endregion
