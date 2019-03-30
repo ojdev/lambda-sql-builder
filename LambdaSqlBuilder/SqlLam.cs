@@ -25,7 +25,7 @@ namespace LambdaSqlBuilder
 
         public string ToSql(string indexName = null)
         {
-            var sqlString = QueryString;
+            var sqlString = _builder.QueryString;
             if (!string.IsNullOrWhiteSpace(indexName))
             {
                 sqlString = sqlString.Replace(typeof(T).Name, indexName);
