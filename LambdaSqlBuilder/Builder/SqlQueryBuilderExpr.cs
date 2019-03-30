@@ -88,7 +88,7 @@ namespace LambdaSqlBuilder.Builder
 
         public void QueryByIsIn(string tableName, string fieldName, SqlLamBase sqlQuery)
         {
-            var innerQuery = sqlQuery.QueryString;            
+            var innerQuery = sqlQuery.SqlBuilder.QueryString;            
             foreach (var param in sqlQuery.QueryParameters)
             {
                 var innerParamKey = "Inner" + param.Key;
